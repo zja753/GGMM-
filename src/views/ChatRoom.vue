@@ -14,7 +14,9 @@
     <chatForm
       class="chatForm"
       :chatFormList="chatFormList"
+      :messageList="messageList"
       @chatFormListRemoveItem="chatFormListRemoveItem"
+      @addMessage="addMessage"
     />
   </div>
 </template>
@@ -119,173 +121,7 @@ export default {
         },
       ],
       userInfo: this.$store.state.userInfo,
-      messageList: [
-        {
-          from: "陈灵均",
-          number: "admin3",
-          msg: "你啥时候回落魄山？",
-          isGroup: false,
-          time: Date.now(),
-        },
-        {
-          from: "相亲相爱一家人",
-          number: "15515611561",
-          lastNickName: "朱敛",
-          msg: "？？？？？？",
-          isGroup: true,
-          time: Date.now(),
-        },
-        {
-          from: "陈灵均",
-          number: "admin3",
-          msg: "你啥时候回落魄山？",
-          isGroup: false,
-          time: Date.now(),
-        },
-        {
-          from: "相亲相爱一家人",
-          number: "15515611561",
-          lastNickName: "朱敛",
-          msg: "？？？？？？",
-          isGroup: true,
-          time: Date.now(),
-        },
-        {
-          from: "陈灵均",
-          number: "admin3",
-          msg: "你啥时候回落魄山？",
-          isGroup: false,
-          time: Date.now(),
-        },
-        {
-          from: "相亲相爱一家人",
-          number: "15515611561",
-          lastNickName: "朱敛",
-          msg: "？？？？？？",
-          isGroup: true,
-          time: Date.now(),
-        },
-        {
-          from: "陈灵均",
-          number: "admin3",
-          msg: "你啥时候回落魄山？",
-          isGroup: false,
-          time: Date.now(),
-        },
-        {
-          from: "相亲相爱一家人",
-          number: "15515611561",
-          lastNickName: "朱敛",
-          msg: "？？？？？？",
-          isGroup: true,
-          time: Date.now(),
-        },
-        {
-          from: "陈灵均",
-          number: "admin3",
-          msg: "你啥时候回落魄山？",
-          isGroup: false,
-          time: Date.now(),
-        },
-        {
-          from: "相亲相爱一家人",
-          number: "15515611561",
-          lastNickName: "朱敛",
-          msg: "？？？？？？",
-          isGroup: true,
-          time: Date.now(),
-        },
-        {
-          from: "陈灵均",
-          number: "admin3",
-          msg: "你啥时候回落魄山？",
-          isGroup: false,
-          time: Date.now(),
-        },
-        {
-          from: "相亲相爱一家人",
-          number: "15515611561",
-          lastNickName: "朱敛",
-          msg: "？？？？？？",
-          isGroup: true,
-          time: Date.now(),
-        },
-        {
-          from: "陈灵均",
-          number: "admin3",
-          msg: "你啥时候回落魄山？",
-          isGroup: false,
-          time: Date.now(),
-        },
-        {
-          from: "相亲相爱一家人",
-          number: "15515611561",
-          lastNickName: "朱敛",
-          msg: "？？？？？？",
-          isGroup: true,
-          time: Date.now(),
-        },
-        {
-          from: "陈灵均",
-          number: "admin3",
-          msg: "你啥时候回落魄山？",
-          isGroup: false,
-          time: Date.now(),
-        },
-        {
-          from: "相亲相爱一家人",
-          number: "15515611561",
-          lastNickName: "朱敛",
-          msg: "？？？？？？",
-          isGroup: true,
-          time: Date.now(),
-        },
-        {
-          from: "陈灵均",
-          number: "admin3",
-          msg: "你啥时候回落魄山？",
-          isGroup: false,
-          time: Date.now(),
-        },
-        {
-          from: "相亲相爱一家人",
-          number: "15515611561",
-          lastNickName: "朱敛",
-          msg: "？？？？？？",
-          isGroup: true,
-          time: Date.now(),
-        },
-        {
-          from: "陈灵均",
-          number: "admin3",
-          msg: "你啥时候回落魄山？",
-          isGroup: false,
-          time: Date.now(),
-        },
-        {
-          from: "相亲相爱一家人",
-          number: "15515611561",
-          lastNickName: "朱敛",
-          msg: "？？？？？？",
-          isGroup: true,
-          time: Date.now(),
-        },
-        {
-          from: "陈灵均",
-          number: "admin3",
-          msg: "你啥时候回落魄山？",
-          isGroup: false,
-          time: Date.now(),
-        },
-        {
-          from: "相亲相爱一家人",
-          number: "15515611561",
-          lastNickName: "朱敛",
-          msg: "？？？？？？",
-          isGroup: true,
-          time: Date.now(),
-        },
-      ],
+      messageList: [],
       requestList: [],
       chatFormList: [],
       chatListRefresh: true,
@@ -335,32 +171,50 @@ export default {
         });
       }
     },
+    async fetchMessageList() {
+      const res = await this.$axios.get("/chat/fetchMessage", {
+        account: this.$store.state.account,
+      });
+      if (res.status === 1) {
+        console.log("fetchMessageList", res.data.messageList);
+        this.messageList = res.data.messageList
+      } else {
+        this.$message({
+          message: "获取消息列表失败",
+          type: "error",
+        });
+      }
+    },
+    addMessage(message) {
+      this.messageList.push(message);
+      console.log("messageList", this.messageList);
+    },
   },
   watch: {
-    "$store.state.userInfo": function(val) {
+    "$store.state.userInfo": function (val) {
       this.userInfo = val;
       this.$socket.emit("updataMessage", this.userInfo.account);
       this.$socket.emit("updataRequest", this.userInfo.account);
     },
   },
   async created() {
-    this.sockets.subscribe("tips", function(msg) {
+    this.sockets.subscribe("tips", function (msg) {
       this.$message({
         message: msg,
         // type: "warning",
       });
     });
-    this.sockets.subscribe("updata-message", function(messageList) {
+    this.sockets.subscribe("updata-message", function (messageList) {
       console.log("updataMessage");
       console.log(this.messageList, messageList);
       this.messageList = messageList;
     });
-    this.sockets.subscribe("updata-request", function(requestList) {
+    this.sockets.subscribe("updata-request", function (requestList) {
       console.log("updataRequest");
       console.log(this.requestList, requestList);
       this.requestList = requestList;
     });
-    this.sockets.subscribe("updata-friend", function(friendList) {
+    this.sockets.subscribe("updata-friend", function (friendList) {
       console.log("updataFriend");
       console.log(this.friendList, friendList);
       this.friendList = friendList.map((item) => {
@@ -373,17 +227,22 @@ export default {
       });
       this.relordChatList();
     });
-    this.sockets.subscribe("add-friend-request", function(request) {
+    this.sockets.subscribe("add-friend-request", function (request) {
       this.$message(`收到用户:${request.account} 的好友请求`);
+    });
+    this.sockets.subscribe("receiveMessage", function (message) {
+      this.messageList.push(message);
     });
 
     this.getUserInfo();
     this.fetchFriendList();
+    // this.fetchMessageList();
   },
   mounted() {
     this.userInfo = this.$store.state.userInfo;
     this.$socket.emit("updataMessage", this.userInfo.account);
     this.$socket.emit("updataRequest", this.userInfo.account);
+    this.$socket.emit("login", this.$store.state.account); // 登录
   },
 };
 </script>

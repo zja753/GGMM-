@@ -1,20 +1,19 @@
 <template>
   <div class="chat">
-    <div class="messageBox">
+    <div class="messageBox" ref="messageBox">
       <div
         class="messageItem"
         :class="item.from === userInfo.account ? 'mine' : ''"
         v-for="(item, index) in messageList"
         :key="item.from + 'messageItem' + index"
+        v-show="item.from==to.number||item.to==to.number"
       >
         <div class="avatar">
           <el-avatar class="avatar" :size="30" :src="item.avatar"></el-avatar>
         </div>
         <div class="message">
-          <span class="userName" v-if="item.from !== userInfo.account">{{
-            item.fromName
-          }}</span>
-          <p class="msg">{{ item.msg }}</p>
+          <span class="userName">{{ item.fromName }}</span>
+          <p class="msg">{{ item.content }}</p>
         </div>
       </div>
     </div>
@@ -26,26 +25,18 @@
         v-model="sendMessage"
         resize="none"
         @keyup.enter.native="submitMsg"
-      >
-      </el-input>
-      <el-button
-        class="sendBtn"
-        type="primary"
-        style="padding:6px 20px"
-        @click="submitMsg"
-        >发送</el-button
-      >
+      ></el-input>
+      <el-button class="sendBtn" type="primary" style="padding:6px 20px" @click="submitMsg">发送</el-button>
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  props: ["to"],
+  props: ["to", "messageList"],
   data() {
     return {
       sendMessage: "",
-      messageList: [],
       userInfo: this.$store.state.userInfo,
     };
   },
@@ -66,251 +57,44 @@ export default {
       const randomNumber = Math.floor(Math.random() * avatarList.length);
       return avatarList[randomNumber];
     },
-    fetchMessageList() {
-      this.messageList = [
-        {
-          fromName: "陈灵均",
-          toName: "相亲相爱一家人",
-          from: "admin3",
-          to: "15515611561",
-          msg: "测试测试",
-          time: Date.now(),
-          avatar: this.getAvatar(),
-        },
-        {
-          fromName: "裴钱",
-          toName: "相亲相爱一家人",
-          from: "admin2",
-          to: "15515611561",
-          msg:
-            "测试测试个啥呀测试测试个啥呀测试测试个啥呀测试测试个啥呀测试测试个啥呀测试测试个啥呀测试测试个啥呀测试测试个啥呀测试测试个啥呀测试测试个啥呀测试测试个啥呀",
-          time: Date.now(),
-          avatar: this.getAvatar(),
-        },
-        {
-          fromName: "陈灵均",
-          toName: "相亲相爱一家人",
-          from: "admin3",
-          to: "15515611561",
-          msg: "测试测试",
-          time: Date.now(),
-          avatar: this.getAvatar(),
-        },
-        {
-          fromName: "陈如初",
-          toName: "相亲相爱一家人",
-          from: "admin4",
-          to: "15515611561",
-          msg: "测试测试个啥呀",
-          time: Date.now(),
-          avatar: this.getAvatar(),
-        },
-        {
-          fromName: "陈灵均",
-          toName: "相亲相爱一家人",
-          from: "admin3",
-          to: "15515611561",
-          msg: "测试测试",
-          time: Date.now(),
-          avatar: this.getAvatar(),
-        },
-        {
-          fromName: "陈如初",
-          toName: "相亲相爱一家人",
-          from: "admin4",
-          to: "15515611561",
-          msg: "测试测试个啥呀",
-          time: Date.now(),
-          avatar: this.getAvatar(),
-        },
-        {
-          fromName: "裴钱",
-          toName: "相亲相爱一家人",
-          from: "admin2",
-          to: "15515611561",
-          msg: "测试测试",
-          time: Date.now(),
-          avatar: this.getAvatar(),
-        },
-        {
-          fromName: "陈如初",
-          toName: "相亲相爱一家人",
-          from: "admin4",
-          to: "15515611561",
-          msg:
-            "测试测试个啥呀测试测试个啥呀测试测试个啥呀测试测试个啥呀测试测试个啥呀测试测试个啥呀测试测试个啥呀测试测试个啥呀测试测试个啥呀测试测试个啥呀测试测试个啥呀",
-          time: Date.now(),
-          avatar: this.getAvatar(),
-        },
-        {
-          fromName: "陈灵均",
-          toName: "相亲相爱一家人",
-          from: "admin3",
-          to: "15515611561",
-          msg: "测试测试",
-          time: Date.now(),
-          avatar: this.getAvatar(),
-        },
-        {
-          fromName: "裴钱",
-          toName: "相亲相爱一家人",
-          from: "admin2",
-          to: "15515611561",
-          msg: "测试测试个啥呀",
-          time: Date.now(),
-          avatar: this.getAvatar(),
-        },
-        {
-          fromName: "陈灵均",
-          toName: "相亲相爱一家人",
-          from: "admin3",
-          to: "15515611561",
-          msg: "测试测试",
-          time: Date.now(),
-          avatar: this.getAvatar(),
-        },
-        {
-          fromName: "陈如初",
-          toName: "相亲相爱一家人",
-          from: "admin4",
-          to: "15515611561",
-          msg: "测试测试个啥呀",
-          time: Date.now(),
-          avatar: this.getAvatar(),
-        },
-        {
-          fromName: "陈灵均",
-          toName: "相亲相爱一家人",
-          from: "admin3",
-          to: "15515611561",
-          msg: "测试测试",
-          time: Date.now(),
-          avatar: this.getAvatar(),
-        },
-        {
-          fromName: "陈如初",
-          toName: "相亲相爱一家人",
-          from: "admin4",
-          to: "15515611561",
-          msg:
-            "测试测试个啥呀测试测试个啥呀测试测试个啥呀测试测试个啥呀测试测试个啥呀测试测试个啥呀测试测试个啥呀测试测试个啥呀测试测试个啥呀测试测试个啥呀测试测试个啥呀",
-          time: Date.now(),
-          avatar: this.getAvatar(),
-        },
-        {
-          fromName: "陈灵均",
-          toName: "相亲相爱一家人",
-          from: "admin3",
-          to: "15515611561",
-          msg: "测试测试",
-          time: Date.now(),
-          avatar: this.getAvatar(),
-        },
-        {
-          fromName: "陈如初",
-          toName: "相亲相爱一家人",
-          from: "admin4",
-          to: "15515611561",
-          msg: "测试测试个啥呀",
-          time: Date.now(),
-          avatar: this.getAvatar(),
-        },
-        {
-          fromName: "陈灵均",
-          toName: "相亲相爱一家人",
-          from: "admin3",
-          to: "15515611561",
-          msg: "测试测试",
-          time: Date.now(),
-          avatar: this.getAvatar(),
-        },
-        {
-          fromName: "陈如初",
-          toName: "相亲相爱一家人",
-          from: "admin4",
-          to: "15515611561",
-          msg: "测试测试个啥呀",
-          time: Date.now(),
-          avatar: this.getAvatar(),
-        },
-        {
-          fromName: "陈灵均",
-          toName: "相亲相爱一家人",
-          from: "admin3",
-          to: "15515611561",
-          msg: "测试测试",
-          time: Date.now(),
-          avatar: this.getAvatar(),
-        },
-        {
-          fromName: "陈如初",
-          toName: "相亲相爱一家人",
-          from: "admin4",
-          to: "15515611561",
-          msg:
-            "测试测试个啥呀测试测试个啥呀测试测试个啥呀测试测试个啥呀测试测试个啥呀测试测试个啥呀测试测试个啥呀测试测试个啥呀测试测试个啥呀测试测试个啥呀测试测试个啥呀",
-          time: Date.now(),
-          avatar: this.getAvatar(),
-        },
-        {
-          fromName: "陈灵均",
-          toName: "相亲相爱一家人",
-          from: "admin3",
-          to: "15515611561",
-          msg: "测试测试",
-          time: Date.now(),
-          avatar: this.getAvatar(),
-        },
-        {
-          fromName: "陈如初",
-          toName: "相亲相爱一家人",
-          from: "admin4",
-          to: "15515611561",
-          msg: "测试测试个啥呀",
-          time: Date.now(),
-          avatar: this.getAvatar(),
-        },
-        {
-          fromName: "陈灵均",
-          toName: "相亲相爱一家人",
-          from: "admin3",
-          to: "15515611561",
-          msg: "测试测试",
-          time: Date.now(),
-          avatar: this.getAvatar(),
-        },
-        {
-          fromName: "陈如初",
-          toName: "相亲相爱一家人",
-          from: "admin4",
-          to: "15515611561",
-          msg: "测试测试个啥呀",
-          time: Date.now(),
-          avatar: this.getAvatar(),
-        },
-      ];
-    },
     submitMsg() {
       console.log("sendMessage", this.sendMessage);
-      this.$socket.emit("sendMessage", {
+      const message = {
         fromName: this.userInfo.nickName,
         from: this.userInfo.account,
         toName: this.to.name,
         to: this.to.number,
         content: this.sendMessage,
         isGroup: this.to.isGroup,
-      });
+      };
+      this.$socket.emit("sendMessage", message);
+      this.$emit("addMessage", message);
+      this.scrollToEnd();
       this.sendMessage = "";
+    },
+    scrollToEnd() {
+      this.$nextTick(() => {
+        const messageBox = this.$refs["messageBox"];
+        console.log(messageBox);
+        messageBox.scrollTop = messageBox.scrollHeight;
+      });
     },
   },
   watch: {
-    "$store.state.userInfo": function(val) {
+    "$store.state.userInfo": function (val) {
       this.userInfo = val;
     },
+    "messageList.length": {
+      handler() {
+        this.scrollToEnd();
+
+        console.log("---------------------------------");
+        console.log(this.messageList[0]);
+        console.log(this.to);
+      },
+    },
   },
-  mounted() {
-    this.fetchMessageList();
-  },
+  mounted() {},
 };
 </script>
 

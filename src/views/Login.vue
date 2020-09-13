@@ -87,7 +87,7 @@ export default {
                   type: "success",
                   message: "登录成功，跳转到聊天室",
                 });
-                this.$socket.emit("login", this.loginForm.account);
+                // this.$socket.emit("login", this.loginForm.account); 应该发到ChatForm里面，刷新的时候才会重新登录
                 this.$router.push({ name: "ChatRoom" });
                 this.loginLoading = false;
               } else {

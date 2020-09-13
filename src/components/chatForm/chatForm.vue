@@ -11,7 +11,7 @@
             :label="item.name"
             :name="item.number"
           >
-            <chat class="chatBody" :to="item" />
+            <chat class="chatBody" :to="item" :messageList="messageList" @addMessage="addMessage" />
             <userList class="userList" v-if="item.isGroup" />
           </el-tab-pane>
         </el-tabs>
@@ -25,7 +25,7 @@ import chat from "./chat";
 import userList from "../userList/userList";
 export default {
   components: { chat, userList },
-  props: ["chatFormList"],
+  props: ["chatFormList", "messageList"],
   methods: {
     tabsRemove(targetNumber) {
       this.chatFormList.some((item, index) => {
@@ -33,6 +33,9 @@ export default {
           this.$emit("chatFormListRemoveItem", index);
         return item.number === targetNumber;
       });
+    },
+    addMessage(message) {
+      this.$emit("addMessage", message);
     },
   },
 };
